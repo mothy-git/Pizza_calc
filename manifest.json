@@ -1,13 +1,13 @@
 {
-  "name": "Pizza Lab v1",
+  "name": "Pizza Lab v2",
   "short_name": "Pizza Lab",
-  "description": "Dough calculator, fermentation planner, troubleshooting and bake journal.",
-  "start_url": "./index.html",
+  "description": "Pizza dough calculator, fermentation planner and bake journal.",
+  "start_url": "./",
   "display": "standalone",
   "background_color": "#0b0b0c",
   "theme_color": "#111111",
   "icons": [
-    {"src":"icons/icon-192.png","sizes":"192x192","type":"image/png"},
-    {"src":"icons/icon-512.png","sizes":"512x512","type":"image/png"}
+    {"src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png"},
+    {"src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png"}
   ]
 }

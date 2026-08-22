@@ -10,14 +10,14 @@
   <link rel="manifest" href="manifest.json" />
   <link rel="apple-touch-icon" href="icons/icon-192.png" />
   <link rel="stylesheet" href="styles.css" />
-  <title>Pizza Lab v1</title>
+  <title>Pizza Lab v2</title>
 </head>
 <body>
   <header class="app-header">
     <div>
-      <div class="eyebrow">PIZZA LAB</div>
-      <h1>Build better dough.</h1>
-      <p class="sub">Calculator, fermentation planner, preferments, troubleshooting and bake journal.</p>
+      <div class="eyebrow">PIZZA LAB <span class="version">V2</span></div>
+      <h1>Better dough, less guessing.</h1>
+      <p class="sub">Source-backed style presets, exact baker's maths, temperature-aware yeast planning, preferments and a bake journal.</p>
     </div>
     <button id="installBtn" class="ghost hidden">Install</button>
   </header>
@@ -27,6 +27,7 @@
     <button class="tab" data-tab="planner">Planner</button>
     <button class="tab" data-tab="troubleshooter">Fix it</button>
     <button class="tab" data-tab="journal">Journal</button>
+    <button class="tab" data-tab="sources">Sources</button>
   </nav>
 
   <main>
@@ -41,6 +42,51 @@
         </div>
 
         <div class="grid two">
+          <label>Pizza style
+            <select id="pizzaStyle">
+              <option value="traditional">Traditional Neapolitan</option>
+              <option value="contemporary" selected>Contemporary Neapolitan</option>
+              <option value="canotto">Canotto / high-hydration</option>
+              <option value="hybrid">Modern hybrid</option>
+              <option value="nyneo">NY–Neapolitan hybrid</option>
+              <option value="ny">New York</option>
+              <option value="roman">Roman / thin-crisp</option>
+              <option value="detroit">Detroit / pan</option>
+              <option value="pan">General pan pizza</option>
+              <option value="custom">Custom</option>
+            </select>
+          </label>
+          <label>Oven
+            <select id="ovenProfile">
+              <option value="sidekick">Camp Chef Sidekick pizza oven</option>
+              <option value="high-temp">High-temp pizza oven</option>
+              <option value="home">Conventional home oven</option>
+            </select>
+          </label>
+          <label>Flour profile
+            <select id="flourProfile">
+              <option value="caputo-pizzeria">Caputo Pizzeria</option>
+              <option value="caputo-nuvola">Caputo Nuvola</option>
+              <option value="strong">Strong bread flour</option>
+              <option value="plain">Plain / AP flour</option>
+              <option value="custom">Custom / unknown</option>
+            </select>
+          </label>
+          <label>Yeast type
+            <select id="yeastType">
+              <option value="idy">Instant dry yeast (IDY)</option>
+              <option value="ady">Active dry yeast (ADY)</option>
+              <option value="fresh">Fresh yeast</option>
+            </select>
+          </label>
+        </div>
+
+        <div class="recommendation" id="styleRecommendation"></div>
+        <button id="applyPreset" class="secondary wide">Apply recommended formula</button>
+
+        <div class="divider"></div>
+
+        <div class="grid two">
           <label>Pizza balls
             <input id="balls" type="number" min="1" step="1" value="4" />
           </label>
@@ -48,47 +94,40 @@
             <input id="ballWeight" type="number" min="100" step="5" value="280" />
           </label>
           <label>Hydration (%)
-            <input id="hydration" type="number" min="45" max="100" step="0.1" value="66" />
+            <input id="hydration" type="number" min="45" max="100" step="0.1" value="65" />
           </label>
           <label>Salt (%)
-            <input id="salt" type="number" min="0" max="5" step="0.1" value="2.8" />
+            <input id="salt" type="number" min="0" max="5" step="0.1" value="3.0" />
           </label>
           <label>Oil (%)
-            <input id="oil" type="number" min="0" max="10" step="0.1" value="0" />
+            <input id="oil" type="number" min="0" max="12" step="0.1" value="0" />
           </label>
           <label>Sugar (%)
             <input id="sugar" type="number" min="0" max="10" step="0.1" value="0" />
           </label>
         </div>
 
-        <div class="divider"></div>
-
-        <div class="grid two">
-          <label>Flour profile
-            <select id="flourProfile">
-              <option value="caputo-pizzeria">Caputo Pizzeria</option>
-              <option value="caputo-nuvola">Caputo Nuvola</option>
-              <option value="strong">Strong bread flour</option>
-              <option value="plain">Plain/AP flour</option>
-              <option value="custom">Custom / unknown</option>
-            </select>
-          </label>
-          <label>Pizza style
-            <select id="pizzaStyle">
-              <option value="neo">Neapolitan</option>
-              <option value="contemporary">Contemporary / canotto</option>
-              <option value="hybrid">Modern hybrid</option>
-              <option value="ny">NY style</option>
-            </select>
-          </label>
-        </div>
+        <details>
+          <summary>Yeast control</summary>
+          <div class="grid two detail-grid">
+            <label>Yeast calculation
+              <select id="yeastMode">
+                <option value="auto">Auto from fermentation plan</option>
+                <option value="manual">Manual baker's %</option>
+              </select>
+            </label>
+            <label id="manualYeastWrap" class="hidden">Manual yeast (%)
+              <input id="manualYeastPct" type="number" min="0" max="5" step="0.001" value="0.100" />
+            </label>
+          </div>
+        </details>
 
         <details>
           <summary>Preferment</summary>
           <div class="grid two detail-grid">
             <label>Type
               <select id="prefermentType">
-                <option value="none">None</option>
+                <option value="none">None / direct dough</option>
                 <option value="poolish">Poolish</option>
                 <option value="biga">Biga</option>
               </select>
@@ -99,10 +138,23 @@
             <label>Preferment hydration (%)
               <input id="prefermentHydration" type="number" min="40" max="120" step="1" value="100" />
             </label>
+            <label>Yeast placed in preferment (%)
+              <input id="prefermentYeastShare" type="number" min="0" max="100" step="5" value="100" />
+            </label>
+            <label>Preferment time (hours)
+              <input id="prefermentHours" type="number" min="0" max="48" step="0.5" value="12" />
+            </label>
+            <label>Preferment temp (°C)
+              <input id="prefermentTemp" type="number" min="4" max="30" step="0.5" value="20" />
+            </label>
           </div>
         </details>
 
         <div class="result-box" id="calcResults"></div>
+        <details class="math-details">
+          <summary>Show the maths</summary>
+          <div id="mathExplanation" class="math-box"></div>
+        </details>
         <div class="button-row">
           <button id="saveRecipe" class="primary">Save recipe</button>
           <button id="copyRecipe" class="secondary">Copy recipe</button>
@@ -116,23 +168,23 @@
       <div class="card">
         <div class="eyebrow">FERMENTATION PLANNER</div>
         <h2>Work backwards from pizza time.</h2>
-        <p class="muted">The yeast figure is a starting estimate, not laboratory truth. Temperature, flour strength, dough handling and fridge performance all matter.</p>
+        <p class="muted">The yeast estimator is deliberately shown as an estimate. It is calibrated against published Ooni dough formulas, then adjusted by a temperature-weighting model. It is not an AVPN or Ooni proprietary calculator.</p>
 
         <div class="grid two">
           <label>Pizza time
             <input id="bakeTime" type="datetime-local" />
           </label>
-          <label>Yeast type
-            <select id="yeastType">
-              <option value="idy">Instant dry yeast</option>
-              <option value="ady">Active dry yeast</option>
-              <option value="fresh">Fresh yeast</option>
+          <label>Your setup calibration
+            <select id="yeastCalibration">
+              <option value="0.8">My dough usually runs fast (−20%)</option>
+              <option value="1" selected>Standard starting point</option>
+              <option value="1.2">My dough usually runs slow (+20%)</option>
             </select>
           </label>
           <label>Room bulk (hours)
             <input id="bulkHours" type="number" min="0" step="0.5" value="2" />
           </label>
-          <label>Room temp (°C)
+          <label>Bulk temp (°C)
             <input id="bulkTemp" type="number" min="10" max="35" step="0.5" value="22" />
           </label>
           <label>Cold ferment (hours)
@@ -153,26 +205,9 @@
       </div>
 
       <div class="card">
-        <div class="eyebrow">OVEN PROFILE</div>
+        <div class="eyebrow">OVEN + STYLE</div>
         <h2>Starting bake targets.</h2>
-        <div class="grid two">
-          <label>Oven
-            <select id="ovenProfile">
-              <option value="sidekick">Camp Chef Sidekick pizza oven</option>
-              <option value="high-temp">High-temp pizza oven</option>
-              <option value="home">Conventional home oven</option>
-            </select>
-          </label>
-          <label>Style
-            <select id="ovenStyle">
-              <option value="neo">Neapolitan</option>
-              <option value="contemporary">Contemporary / canotto</option>
-              <option value="hybrid">Modern hybrid</option>
-              <option value="ny">NY style</option>
-            </select>
-          </label>
-        </div>
-        <div class="result-box" id="ovenResults"></div>
+        <div class="result-box show" id="ovenResults"></div>
       </div>
     </section>
 
@@ -251,10 +286,43 @@
         <div id="savedBakes"></div>
       </div>
     </section>
+
+    <section id="sources" class="panel">
+      <div class="card">
+        <div class="eyebrow">CALCULATION BASIS</div>
+        <h2>What Pizza Lab is actually calculating.</h2>
+        <p><strong>Ingredient weights:</strong> standard baker's percentages. Flour is 100%; every other ingredient is a percentage of flour. Pizza Lab solves backwards from your target total dough weight and includes yeast in the total, so the finished formula still adds up to the ball weights you requested.</p>
+        <div class="formula">Flour = target dough ÷ (1 + water% + salt% + yeast% + oil% + sugar%)</div>
+        <p><strong>Preferments:</strong> the selected percentage of total flour and matching water are moved into the poolish/biga. The final dough water is reduced by the same amount so overall hydration does not change.</p>
+        <p><strong>Yeast:</strong> the automatic yeast estimate is a Pizza Lab model, not an official AVPN/Ooni formula. It is anchored to two current Ooni recipes — a short 3–4 hour dough and a ~25 hour Neapolitan-style dough — then temperature-weighted. Cold fermentation is deliberately suppressed below 10°C. Treat it as a starting dose and calibrate it to your fridge, flour and dough temperature.</p>
+      </div>
+
+      <div class="card">
+        <div class="eyebrow">PRIMARY / OFFICIAL SOURCES</div>
+        <div class="source-list">
+          <a href="https://www.pizzanapoletana.org/public/pdf/Disciplinare-2024-ENG.pdf" target="_blank" rel="noopener"><strong>AVPN International Regulations 2024</strong><span>Traditional Neapolitan ingredient limits, no fat/sugar, flour strength, ball weight and fermentation guidance.</span></a>
+          <a href="https://www.pizzanapoletana.org/en/ricetta_pizza_napoletana" target="_blank" rel="noopener"><strong>AVPN official recipe page</strong><span>1 L water, 1.6–1.8 kg flour, 40–60 g salt and fresh/dry yeast relationship.</span></a>
+          <a href="https://www.mulinocaputo.it/en/products/pizzeria/" target="_blank" rel="noopener"><strong>Mulino Caputo — Pizzeria</strong><span>Type 00, 12.5% protein, W 260–280, P/L 0.50–0.60; recommended for classic Neapolitan.</span></a>
+          <a href="https://www.mulinocaputo.it/en/products/nuvola/" target="_blank" rel="noopener"><strong>Mulino Caputo — Nuvola</strong><span>Type 0, 12.5% protein, W 270–290, P/L 0.50–0.60; Caputo gives a 72-hour example split between fridge and room temperature.</span></a>
+          <a href="https://au.ooni.com/blogs/recipes/ooni-neapolitan-style-pizza-dough" target="_blank" rel="noopener"><strong>Ooni Neapolitan-style dough</strong><span>65% hydration and published fresh/ADY/IDY quantities with a ~25-hour fermentation schedule.</span></a>
+          <a href="https://au.ooni.com/blogs/recipes/classic-pizza-dough" target="_blank" rel="noopener"><strong>Ooni Classic Pizza Dough</strong><span>Short 3–4 hour dough and published yeast quantities used as the fast-fermentation anchor.</span></a>
+          <a href="https://au.ooni.com/blogs/recipes/new-york-style-pizza-dough" target="_blank" rel="noopener"><strong>Ooni New York-style pizza</strong><span>Official recipe example with ~65% hydration, ~3% salt, ~5% oil and ~1% sugar.</span></a>
+          <a href="https://au.ooni.com/blogs/recipes/our-best-poolish-dough" target="_blank" rel="noopener"><strong>Ooni Poolish Dough</strong><span>100% hydration poolish and a 12-hour preferment example.</span></a>
+          <a href="https://au.ooni.com/blogs/recipes/100-biga" target="_blank" rel="noopener"><strong>Ooni 100% Biga</strong><span>Biga as a low-hydration preferment and a 16-hour head-start example.</span></a>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="eyebrow">WHAT IS SOURCE-BACKED VS GUIDANCE?</div>
+        <div class="legend-row"><span class="badge source">SOURCE</span><span>Directly derived from an official association, manufacturer or Ooni published recipe.</span></div>
+        <div class="legend-row"><span class="badge guidance">GUIDANCE</span><span>Pizza Lab working range or practical recommendation. Useful, but not an official standard.</span></div>
+        <div class="legend-row"><span class="badge model">MODEL</span><span>Calculated estimate, especially yeast/temperature behaviour. Tune against your own bake journal.</span></div>
+      </div>
+    </section>
   </main>
 
   <footer>
-    <strong>Pizza Lab v1</strong> stores data locally on this device. Fermentation and oven figures are practical starting points; adjust based on your dough and equipment.
+    <strong>Pizza Lab v2</strong> stores recipes and bake notes locally on this device. Recipe scaling is exact baker's maths; fermentation is a transparent starting model, not laboratory truth.
   </footer>
 
   <script src="app.js"></script>
