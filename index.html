@@ -1,0 +1,262 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#111111" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Pizza Lab" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="apple-touch-icon" href="icons/icon-192.png" />
+  <link rel="stylesheet" href="styles.css" />
+  <title>Pizza Lab v1</title>
+</head>
+<body>
+  <header class="app-header">
+    <div>
+      <div class="eyebrow">PIZZA LAB</div>
+      <h1>Build better dough.</h1>
+      <p class="sub">Calculator, fermentation planner, preferments, troubleshooting and bake journal.</p>
+    </div>
+    <button id="installBtn" class="ghost hidden">Install</button>
+  </header>
+
+  <nav class="tabs" aria-label="Primary">
+    <button class="tab active" data-tab="calculator">Calculator</button>
+    <button class="tab" data-tab="planner">Planner</button>
+    <button class="tab" data-tab="troubleshooter">Fix it</button>
+    <button class="tab" data-tab="journal">Journal</button>
+  </nav>
+
+  <main>
+    <section id="calculator" class="panel active">
+      <div class="card">
+        <div class="card-head">
+          <div>
+            <div class="eyebrow">DOUGH CALCULATOR</div>
+            <h2>Start with the pizzas you want.</h2>
+          </div>
+          <button id="resetCalc" class="ghost small">Reset</button>
+        </div>
+
+        <div class="grid two">
+          <label>Pizza balls
+            <input id="balls" type="number" min="1" step="1" value="4" />
+          </label>
+          <label>Ball weight (g)
+            <input id="ballWeight" type="number" min="100" step="5" value="280" />
+          </label>
+          <label>Hydration (%)
+            <input id="hydration" type="number" min="45" max="100" step="0.1" value="66" />
+          </label>
+          <label>Salt (%)
+            <input id="salt" type="number" min="0" max="5" step="0.1" value="2.8" />
+          </label>
+          <label>Oil (%)
+            <input id="oil" type="number" min="0" max="10" step="0.1" value="0" />
+          </label>
+          <label>Sugar (%)
+            <input id="sugar" type="number" min="0" max="10" step="0.1" value="0" />
+          </label>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="grid two">
+          <label>Flour profile
+            <select id="flourProfile">
+              <option value="caputo-pizzeria">Caputo Pizzeria</option>
+              <option value="caputo-nuvola">Caputo Nuvola</option>
+              <option value="strong">Strong bread flour</option>
+              <option value="plain">Plain/AP flour</option>
+              <option value="custom">Custom / unknown</option>
+            </select>
+          </label>
+          <label>Pizza style
+            <select id="pizzaStyle">
+              <option value="neo">Neapolitan</option>
+              <option value="contemporary">Contemporary / canotto</option>
+              <option value="hybrid">Modern hybrid</option>
+              <option value="ny">NY style</option>
+            </select>
+          </label>
+        </div>
+
+        <details>
+          <summary>Preferment</summary>
+          <div class="grid two detail-grid">
+            <label>Type
+              <select id="prefermentType">
+                <option value="none">None</option>
+                <option value="poolish">Poolish</option>
+                <option value="biga">Biga</option>
+              </select>
+            </label>
+            <label>Prefermented flour (%)
+              <input id="prefermentPct" type="number" min="0" max="100" step="1" value="30" />
+            </label>
+            <label>Preferment hydration (%)
+              <input id="prefermentHydration" type="number" min="40" max="120" step="1" value="100" />
+            </label>
+          </div>
+        </details>
+
+        <div class="result-box" id="calcResults"></div>
+        <div class="button-row">
+          <button id="saveRecipe" class="primary">Save recipe</button>
+          <button id="copyRecipe" class="secondary">Copy recipe</button>
+        </div>
+      </div>
+
+      <div class="card tip" id="flourTip"></div>
+    </section>
+
+    <section id="planner" class="panel">
+      <div class="card">
+        <div class="eyebrow">FERMENTATION PLANNER</div>
+        <h2>Work backwards from pizza time.</h2>
+        <p class="muted">The yeast figure is a starting estimate, not laboratory truth. Temperature, flour strength, dough handling and fridge performance all matter.</p>
+
+        <div class="grid two">
+          <label>Pizza time
+            <input id="bakeTime" type="datetime-local" />
+          </label>
+          <label>Yeast type
+            <select id="yeastType">
+              <option value="idy">Instant dry yeast</option>
+              <option value="ady">Active dry yeast</option>
+              <option value="fresh">Fresh yeast</option>
+            </select>
+          </label>
+          <label>Room bulk (hours)
+            <input id="bulkHours" type="number" min="0" step="0.5" value="2" />
+          </label>
+          <label>Room temp (°C)
+            <input id="bulkTemp" type="number" min="10" max="35" step="0.5" value="22" />
+          </label>
+          <label>Cold ferment (hours)
+            <input id="coldHours" type="number" min="0" step="1" value="20" />
+          </label>
+          <label>Fridge temp (°C)
+            <input id="fridgeTemp" type="number" min="1" max="10" step="0.5" value="4" />
+          </label>
+          <label>Final ball proof (hours)
+            <input id="ballProofHours" type="number" min="0" step="0.5" value="3" />
+          </label>
+          <label>Ball proof temp (°C)
+            <input id="ballProofTemp" type="number" min="10" max="35" step="0.5" value="22" />
+          </label>
+        </div>
+
+        <div class="result-box" id="plannerResults"></div>
+      </div>
+
+      <div class="card">
+        <div class="eyebrow">OVEN PROFILE</div>
+        <h2>Starting bake targets.</h2>
+        <div class="grid two">
+          <label>Oven
+            <select id="ovenProfile">
+              <option value="sidekick">Camp Chef Sidekick pizza oven</option>
+              <option value="high-temp">High-temp pizza oven</option>
+              <option value="home">Conventional home oven</option>
+            </select>
+          </label>
+          <label>Style
+            <select id="ovenStyle">
+              <option value="neo">Neapolitan</option>
+              <option value="contemporary">Contemporary / canotto</option>
+              <option value="hybrid">Modern hybrid</option>
+              <option value="ny">NY style</option>
+            </select>
+          </label>
+        </div>
+        <div class="result-box" id="ovenResults"></div>
+      </div>
+    </section>
+
+    <section id="troubleshooter" class="panel">
+      <div class="card">
+        <div class="eyebrow">TROUBLESHOOTER</div>
+        <h2>Tell Pizza Lab what went wrong.</h2>
+        <div class="grid two">
+          <label>Problem
+            <select id="problem">
+              <option value="sticky">Dough is very sticky / spreading</option>
+              <option value="tearing">Dough tears when opening</option>
+              <option value="springback">Dough keeps springing back</option>
+              <option value="flat">Flat / weak rim</option>
+              <option value="dense">Dense or gummy crumb</option>
+              <option value="pale">Pale top / poor browning</option>
+              <option value="burntbottom">Bottom burns before top cooks</option>
+              <option value="overproof">Looks overproofed</option>
+              <option value="underproof">Looks underproofed</option>
+            </select>
+          </label>
+          <label>Time until bake
+            <select id="timeToBake">
+              <option value="now">Now / under 30 min</option>
+              <option value="hour">30–90 min</option>
+              <option value="later">2+ hours</option>
+              <option value="next">Next batch</option>
+            </select>
+          </label>
+        </div>
+        <label>Anything else? <span class="muted">optional</span>
+          <textarea id="problemNotes" rows="4" placeholder="e.g. 76% hydration, Caputo Pizzeria, 25°C room, dough balls spreading..."></textarea>
+        </label>
+        <button id="diagnose" class="primary">Give me the fix</button>
+        <div class="result-box" id="fixResults"></div>
+      </div>
+    </section>
+
+    <section id="journal" class="panel">
+      <div class="card">
+        <div class="card-head">
+          <div>
+            <div class="eyebrow">BAKE JOURNAL</div>
+            <h2>Keep the good ones. Learn from the shit ones.</h2>
+          </div>
+          <button id="exportData" class="ghost small">Export</button>
+        </div>
+
+        <div class="grid two">
+          <label>Bake date
+            <input id="journalDate" type="date" />
+          </label>
+          <label>Rating / 10
+            <input id="journalRating" type="number" min="1" max="10" step="0.5" value="8" />
+          </label>
+          <label>Recipe
+            <select id="journalRecipe"></select>
+          </label>
+          <label>Oven / setup
+            <input id="journalOven" type="text" value="Camp Chef Sidekick" />
+          </label>
+        </div>
+        <label>Notes
+          <textarea id="journalNotes" rows="4" placeholder="What worked? What would you change next time?"></textarea>
+        </label>
+        <button id="saveBake" class="primary">Save bake</button>
+      </div>
+
+      <div class="card">
+        <div class="eyebrow">SAVED RECIPES</div>
+        <div id="savedRecipes"></div>
+      </div>
+
+      <div class="card">
+        <div class="eyebrow">PAST BAKES</div>
+        <div id="savedBakes"></div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <strong>Pizza Lab v1</strong> stores data locally on this device. Fermentation and oven figures are practical starting points; adjust based on your dough and equipment.
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
