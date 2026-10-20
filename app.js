@@ -201,6 +201,7 @@ state.profile.friction = state.profile.friction || {};
 state.profile.calibHistory = state.profile.calibHistory || [];
 
 function methodFF(key) {
+  if (!Object.prototype.hasOwnProperty.call(METHODS, key)) key = 'tm7';
   const saved = state.profile.friction[key];
   return saved && Number.isFinite(saved.ff) ? saved.ff : METHODS[key].ff;
 }
@@ -213,7 +214,23 @@ function persist() {
 // ---------- read inputs ----------
 const num = (id, fallback = 0) => { const el = $(id); if (!el) return fallback; const n = parseFloat(el.value); return Number.isFinite(n) ? n : fallback; };
 
+// Reset any select whose stored value isn't a known option (protects against corrupted or tampered saved data).
+function safeSelect(id, valid, fallback) {
+  const el = $(id);
+  if (!Object.prototype.hasOwnProperty.call(valid, el.value)) el.value = fallback;
+  return el.value;
+}
+
 function readPlan() {
+  safeSelect('pizzaStyle', styleProfiles, 'contemporary');
+  safeSelect('flourProfile', flourProfiles, 'caputo-pizzeria');
+  safeSelect('mixMethod', METHODS, 'tm7');
+  safeSelect('yeastType', yeastFactors, 'idy');
+  safeSelect('ovenProfile', ovenGuides, 'sidekick');
+  safeSelect('scheduleTemplate', TEMPLATES, 'sd8');
+  safeSelect('yeastMode', { auto: 1, manual: 1 }, 'auto');
+  safeSelect('prefermentType', { none: 1, poolish: 1, biga: 1 }, 'none');
+  safeSelect('coldForm', { balls: 1, bulk: 1 }, 'balls');
   const prefType = $('prefermentType').value;
   return {
     style: $('pizzaStyle').value,
@@ -1072,7 +1089,7 @@ function renderJournal() {
     const fName = flourProfiles[r.flourProfile]?.name || '';
     const text = r.text || legacyText(r);
     return `<div class="saved-item"><div class="saved-item-head"><div><h3>${esc(r.name)}</h3>
-      <span class="pill">${esc(sName)}</span>${r.hydration !== undefined ? `<span class="pill">${r.hydration}%</span>` : ''}${r.balls ? `<span class="pill">${r.balls} × ${r.ballWeight} g</span>` : ''}${fName ? `<span class="pill">${esc(fName)}</span>` : ''}${r.version === 3 ? '<button class="pill pill-btn" data-load-recipe="' + esc(r.id) + '">Load into plan</button>' : ''}</div>
+      <span class="pill">${esc(sName)}</span>${r.hydration !== undefined ? `<span class="pill">${esc(r.hydration)}%</span>` : ''}${r.balls ? `<span class="pill">${esc(r.balls)} × ${esc(r.ballWeight)} g</span>` : ''}${fName ? `<span class="pill">${esc(fName)}</span>` : ''}${r.version === 3 ? '<button class="pill pill-btn" data-load-recipe="' + esc(r.id) + '">Load into plan</button>' : ''}</div>
       <button class="delete-btn" data-delete-recipe="${esc(r.id)}">Delete</button></div>
       <p class="muted pre">${esc(text)}</p></div>`;
   }).join('') : '<p class="muted">Save a recipe from the Plan tab and it shows here.</p>';

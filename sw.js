@@ -1,4 +1,4 @@
-const CACHE = 'pizza-lab-v3-20261021';
+const CACHE = 'pizza-lab-v3.1-20261021';
 const ASSETS = ['./', './index.html', './styles.css', './model.js', './app.js', './manifest.json', './icon-192.png', './icon-512.png'];
 
 self.addEventListener('install', event => {
