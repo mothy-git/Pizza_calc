@@ -1,0 +1,14 @@
+Pizza Lab v3 — 21 Oct 2026
+- Dough temperature control: target FDT, water temp, ice, chilled-flour fallback.
+- Friction factors per method incl. Thermomix TM7, calibrated from Dough day readings.
+- Thermal fermentation model (dough temp vs time, bulk vs balls) fitted to 6 published recipes.
+- Yeast calibration learned from journal outcomes.
+- Short-ferment schedule templates; 24 h and 48 h cold templates.
+- Temperature chart, timeline, readiness window, method steps with grams.
+- Dough day: re-plan from actual FDT; ball warm-up check.
+- Lab Protocol journal, import/export, My kitchen profile.
+- Learn tab: consensus rules, guide verification, sources (primary first).
+- Fixed icon paths so the service worker/offline mode installs.
+
+Pizza Lab v2 — 22 Aug 2026
+- Yeast included in total; source-labelled presets; preferments; first yeast estimator.

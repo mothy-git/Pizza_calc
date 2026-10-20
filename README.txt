@@ -1,34 +1,52 @@
-PIZZA LAB v1
+PIZZA LAB V3
+============
 
-What is included
-- Reverse dough calculator from pizza count + ball weight
-- Baker's % hydration, salt, oil and sugar
-- Poolish and biga split calculator
-- Fermentation timeline working backwards from bake time
-- Approximate yeast starting dose adjusted for time and temperature
-- Oven starting guides including Camp Chef Sidekick
-- Troubleshooting assistant
-- Saved recipes and bake journal stored locally in the browser
-- JSON data export
-- PWA/offline support
+WHAT'S NEW
+----------
+V3 is built around one idea every serious dough guide agrees on: dough temperature
+controls fermentation speed. Hit a target final dough temperature (FDT) and the rest
+becomes predictable.
 
-IMPORTANT
-The yeast and oven figures are practical starting points, not guaranteed fermentation predictions. Dough temperature, flour, yeast freshness, fridge cycling and handling all affect outcomes.
+- Water-temperature calculator (King Arthur / Tom Lehmann method):
+  water = 3 x target FDT - (room + flour + friction)   (x4 with a preferment)
+  Tells you exactly how to get that water: tap/fridge-water blend, ice (Lehmann formula),
+  or iced water for the Thermomix. Says when water alone can't do it and how cold the
+  flour needs to be.
+- Friction factors per mixing method: TM7 Dough mode, TM7 + folds, hand, folds, stand mixer.
+  Dough day calibrates them from your real probe reading and saves them.
+- New fermentation model: follows the dough's temperature hour by hour (mixing temp ->
+  room/fridge/proof temps, bulk vs balls cool at different speeds) and sizes the yeast.
+  Fitted to 6 published recipes - see Learn tab.
+- Personal yeast calibration that learns from the journal (under/over-proofed).
+- Schedules tuned to short Neapolitan ferments (6/8/12 h) plus 24 h and 48 h cold.
+- Dough temperature chart + clock-time timeline + readiness window.
+- Step-by-step method with exact grams for TM7, hand, folds or stand mixer.
+- Dough day: probe after mixing -> re-plan (shorten proof or proof cooler/warmer).
+  Ball check before opening (minutes to 13 C / 18 C).
+- Tiny-yeast dilution helper for amounts under 1 g.
+- Journal = the guide's Lab Test Protocol (temps, phases, scores, notes).
+- My kitchen: thermometers (probe / probe + IR), fridge, tap water, defaults, backup/import.
+- Learn: 8 consensus rules, the PizzaVibes guide verified line by line, model anchors, 35+ sources.
+- FIX: icons now load from the repo root. V2 looked in icons/ (which doesn't exist), so its
+  offline cache never installed.
 
-HOW TO RUN ON A COMPUTER
-This app must be served over http:// or https:// for the service worker/PWA features to work properly.
+UPLOAD TO GITHUB (Pizza_calc repo root)
+---------------------------------------
+Replace / add these files in the ROOT of the repo (not inside a folder):
+  index.html, app.js, model.js (NEW), styles.css, sw.js, manifest.json, README.txt, CHANGELOG.txt
+Keep icon-192.png and icon-512.png where they are (root).
 
-Easy local test with Python:
-1. Open Terminal in this folder.
-2. Run: python3 -m http.server 8000
-3. Open: http://localhost:8000
+1. Open the Pizza_calc repo on GitHub > Add file > Upload files.
+2. Drag in the files above. Commit to main.
+3. Wait 1-3 minutes, then open https://mothy-git.github.io/Pizza_calc/
 
-HOW TO PUT IT ON AN IPHONE
-The easiest permanent setup is to host this folder on a simple static website host such as GitHub Pages, Netlify, Cloudflare Pages or similar.
-Then on iPhone:
-1. Open the hosted address in Safari.
-2. Tap Share.
-3. Tap Add to Home Screen.
-4. Open Pizza Lab from the new Home Screen icon.
+If the iPhone still shows V2: open in Safari and refresh twice, close and reopen the Home
+Screen app. Last resort: remove the Home Screen icon, open the URL in Safari, refresh,
+Add to Home Screen again. Saved recipes and bakes carry over (same storage keys).
 
-No account or server database is required. Recipes and journal entries are stored locally on that browser/device.
+CALCULATION STATUS
+------------------
+Ingredient maths: exact baker's percentages, yeast included in the total.
+Water/FDT/friction/ice: standard published formulas (SOURCE).
+Yeast & timing: Pizza Lab MODEL - transparent, fitted to published recipes, tuned by your journal.
+TM7 friction 24 C is an ESTIMATE (no published figure) - calibrate on your first batch.

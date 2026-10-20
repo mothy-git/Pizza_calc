@@ -5,38 +5,44 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#111111" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="Pizza Lab" />
+  <meta name="description" content="Pizza dough calculator built around dough temperature control, a Thermomix-aware water calculator, fermentation planner and lab journal." />
   <link rel="manifest" href="manifest.json" />
-  <link rel="apple-touch-icon" href="icons/icon-192.png" />
+  <link rel="apple-touch-icon" href="icon-192.png" />
+  <link rel="icon" href="icon-192.png" />
   <link rel="stylesheet" href="styles.css" />
-  <title>Pizza Lab v2</title>
+  <title>Pizza Lab v3</title>
 </head>
 <body>
   <header class="app-header">
     <div>
-      <div class="eyebrow">PIZZA LAB <span class="version">V2</span></div>
-      <h1>Better dough, less guessing.</h1>
-      <p class="sub">Source-backed style presets, exact baker's maths, temperature-aware yeast planning, preferments and a bake journal.</p>
+      <div class="eyebrow">PIZZA LAB <span class="version">V3</span></div>
+      <h1>Control the temperature.<br />Control the dough.</h1>
+      <p class="sub">Final dough temperature, your TM7, your kitchen and short Neapolitan ferments — worked out before you touch the flour.</p>
     </div>
     <button id="installBtn" class="ghost hidden">Install</button>
   </header>
 
   <nav class="tabs" aria-label="Primary">
-    <button class="tab active" data-tab="calculator">Calculator</button>
-    <button class="tab" data-tab="planner">Planner</button>
-    <button class="tab" data-tab="troubleshooter">Fix it</button>
+    <button class="tab active" data-tab="plan">Plan</button>
+    <button class="tab" data-tab="live">Dough day</button>
+    <button class="tab" data-tab="fix">Fix it</button>
     <button class="tab" data-tab="journal">Journal</button>
-    <button class="tab" data-tab="sources">Sources</button>
+    <button class="tab" data-tab="kitchen">My kitchen</button>
+    <button class="tab" data-tab="learn">Learn</button>
   </nav>
 
   <main>
-    <section id="calculator" class="panel active">
+    <!-- ================= PLAN ================= -->
+    <section id="plan" class="panel active">
+
       <div class="card">
         <div class="card-head">
           <div>
-            <div class="eyebrow">DOUGH CALCULATOR</div>
-            <h2>Start with the pizzas you want.</h2>
+            <div class="eyebrow">STEP 1 · THE PIZZAS</div>
+            <h2>What are you making?</h2>
           </div>
           <button id="resetCalc" class="ghost small">Reset</button>
         </div>
@@ -44,189 +50,330 @@
         <div class="grid two">
           <label>Pizza style
             <select id="pizzaStyle">
-              <option value="traditional">Traditional Neapolitan</option>
-              <option value="contemporary" selected>Contemporary Neapolitan</option>
-              <option value="canotto">Canotto / high-hydration</option>
-              <option value="hybrid">Modern hybrid</option>
-              <option value="nyneo">NY–Neapolitan hybrid</option>
-              <option value="ny">New York</option>
-              <option value="roman">Roman / thin-crisp</option>
-              <option value="detroit">Detroit / pan</option>
-              <option value="pan">General pan pizza</option>
-              <option value="custom">Custom</option>
+              <optgroup label="Your styles">
+                <option value="contemporary">Contemporary Neapolitan</option>
+                <option value="traditional">Traditional Neapolitan (AVPN)</option>
+              </optgroup>
+              <optgroup label="Other styles">
+                <option value="canotto">Canotto / high-hydration</option>
+                <option value="hybrid">Modern hybrid</option>
+                <option value="nyneo">NY–Neapolitan hybrid</option>
+                <option value="ny">New York</option>
+                <option value="roman">Roman / thin-crisp</option>
+                <option value="detroit">Detroit / pan</option>
+                <option value="pan">General pan pizza</option>
+                <option value="custom">Custom</option>
+              </optgroup>
             </select>
           </label>
-          <label>Oven
-            <select id="ovenProfile">
-              <option value="sidekick">Camp Chef Sidekick pizza oven</option>
-              <option value="high-temp">High-temp pizza oven</option>
-              <option value="home">Conventional home oven</option>
-            </select>
-          </label>
-          <label>Flour profile
+          <label>Flour
             <select id="flourProfile">
-              <option value="caputo-pizzeria">Caputo Pizzeria</option>
-              <option value="caputo-nuvola">Caputo Nuvola</option>
+              <option value="caputo-pizzeria">Caputo Pizzeria (00)</option>
+              <option value="caputo-nuvola">Caputo Nuvola / Cloud (0)</option>
               <option value="strong">Strong bread flour</option>
               <option value="plain">Plain / AP flour</option>
               <option value="custom">Custom / unknown</option>
             </select>
           </label>
-          <label>Yeast type
-            <select id="yeastType">
-              <option value="idy">Instant dry yeast (IDY)</option>
-              <option value="ady">Active dry yeast (ADY)</option>
-              <option value="fresh">Fresh yeast</option>
-            </select>
+        </div>
+        <div class="grid two compact" style="margin-top:12px">
+          <label>Pizza balls
+            <input id="balls" type="number" inputmode="numeric" min="1" step="1" value="4" />
+          </label>
+          <label>Ball weight (g)
+            <input id="ballWeight" type="number" inputmode="numeric" min="100" step="5" value="280" />
           </label>
         </div>
 
         <div class="recommendation" id="styleRecommendation"></div>
         <button id="applyPreset" class="secondary wide">Apply recommended formula</button>
 
-        <div class="divider"></div>
-
-        <div class="grid two">
-          <label>Pizza balls
-            <input id="balls" type="number" min="1" step="1" value="4" />
-          </label>
-          <label>Ball weight (g)
-            <input id="ballWeight" type="number" min="100" step="5" value="280" />
-          </label>
+        <div class="grid two compact" style="margin-top:14px">
           <label>Hydration (%)
-            <input id="hydration" type="number" min="45" max="100" step="0.1" value="65" />
+            <input id="hydration" type="number" inputmode="decimal" min="45" max="100" step="0.5" value="65" />
           </label>
           <label>Salt (%)
-            <input id="salt" type="number" min="0" max="5" step="0.1" value="3.0" />
-          </label>
-          <label>Oil (%)
-            <input id="oil" type="number" min="0" max="12" step="0.1" value="0" />
-          </label>
-          <label>Sugar (%)
-            <input id="sugar" type="number" min="0" max="10" step="0.1" value="0" />
+            <input id="salt" type="number" inputmode="decimal" min="0" max="5" step="0.1" value="3.0" />
           </label>
         </div>
 
-        <details>
-          <summary>Yeast control</summary>
+        <details id="enrichDetails">
+          <summary>Oil &amp; sugar <span class="muted">(not used in Neapolitan)</span></summary>
           <div class="grid two detail-grid">
-            <label>Yeast calculation
-              <select id="yeastMode">
-                <option value="auto">Auto from fermentation plan</option>
-                <option value="manual">Manual baker's %</option>
-              </select>
+            <label>Oil (%)
+              <input id="oil" type="number" inputmode="decimal" min="0" max="12" step="0.1" value="0" />
             </label>
-            <label id="manualYeastWrap" class="hidden">Manual yeast (%)
-              <input id="manualYeastPct" type="number" min="0" max="5" step="0.001" value="0.100" />
+            <label>Sugar (%)
+              <input id="sugar" type="number" inputmode="decimal" min="0" max="10" step="0.1" value="0" />
             </label>
           </div>
         </details>
 
         <details>
-          <summary>Preferment</summary>
+          <summary>Yeast type &amp; preferment</summary>
           <div class="grid two detail-grid">
-            <label>Type
+            <label>Yeast type
+              <select id="yeastType">
+                <option value="idy">Instant dry yeast (IDY)</option>
+                <option value="ady">Active dry yeast (ADY)</option>
+                <option value="fresh">Fresh yeast</option>
+              </select>
+            </label>
+            <label>Yeast amount
+              <select id="yeastMode">
+                <option value="auto">Auto from schedule + temperatures</option>
+                <option value="manual">Manual baker's %</option>
+              </select>
+            </label>
+            <label id="manualYeastWrap" class="hidden">Manual yeast (% of flour, in the type above)
+              <input id="manualYeastPct" type="number" inputmode="decimal" min="0" max="5" step="0.001" value="0.100" />
+            </label>
+            <label>Preferment
               <select id="prefermentType">
                 <option value="none">None / direct dough</option>
                 <option value="poolish">Poolish</option>
                 <option value="biga">Biga</option>
               </select>
             </label>
+          </div>
+          <div id="prefermentFields" class="grid two detail-grid hidden">
             <label>Prefermented flour (%)
-              <input id="prefermentPct" type="number" min="0" max="100" step="1" value="30" />
+              <input id="prefermentPct" type="number" inputmode="decimal" min="0" max="100" step="1" value="30" />
             </label>
             <label>Preferment hydration (%)
-              <input id="prefermentHydration" type="number" min="40" max="120" step="1" value="100" />
-            </label>
-            <label>Yeast placed in preferment (%)
-              <input id="prefermentYeastShare" type="number" min="0" max="100" step="5" value="100" />
+              <input id="prefermentHydration" type="number" inputmode="decimal" min="40" max="120" step="1" value="100" />
             </label>
             <label>Preferment time (hours)
-              <input id="prefermentHours" type="number" min="0" max="48" step="0.5" value="12" />
+              <input id="prefermentHours" type="number" inputmode="decimal" min="1" max="48" step="0.5" value="12" />
             </label>
             <label>Preferment temp (°C)
-              <input id="prefermentTemp" type="number" min="4" max="30" step="0.5" value="20" />
+              <input id="prefermentTemp" type="number" inputmode="decimal" min="2" max="30" step="0.5" value="18" />
             </label>
           </div>
         </details>
+      </div>
 
-        <div class="result-box" id="calcResults"></div>
+      <div class="card">
+        <div class="eyebrow">STEP 2 · TIMING</div>
+        <h2>When do you want to eat?</h2>
+        <div class="grid two">
+          <label>Pizza time
+            <input id="bakeTime" type="datetime-local" />
+          </label>
+          <label>Schedule
+            <select id="scheduleTemplate">
+              <optgroup label="Short (your usual)">
+                <option value="sd6">Same day · 6 h</option>
+                <option value="sd8" selected>Same day · 8 h</option>
+                <option value="sd12">Same day · 12 h</option>
+              </optgroup>
+              <optgroup label="Longer">
+                <option value="rt24">24 h at room temp</option>
+                <option value="cold24">24 h with fridge (guide recipe)</option>
+                <option value="cold48">48 h cold balls</option>
+              </optgroup>
+              <option value="custom">Custom</option>
+            </select>
+          </label>
+        </div>
+
+        <div class="phase-grid">
+          <div class="phase">
+            <div class="phase-title"><span class="dot bulk"></span>Bulk at room temp</div>
+            <div class="grid two compact">
+              <label>Hours<input id="bulkHours" type="number" inputmode="decimal" min="0" step="0.25" value="2" /></label>
+              <label>Temp (°C)<input id="bulkTemp" type="number" inputmode="decimal" min="10" max="35" step="0.5" value="22" /></label>
+            </div>
+          </div>
+          <div class="phase">
+            <div class="phase-title"><span class="dot cold"></span>Fridge</div>
+            <div class="grid two compact">
+              <label>Hours<input id="coldHours" type="number" inputmode="decimal" min="0" step="1" value="0" /></label>
+              <label>Fridge temp (°C)<input id="fridgeTemp" type="number" inputmode="decimal" min="0" max="10" step="0.5" value="5" /></label>
+            </div>
+            <label class="inline-select">Goes in the fridge as
+              <select id="coldForm">
+                <option value="balls">Balls (cools faster — recommended)</option>
+                <option value="bulk">One bulk mass (ball after)</option>
+              </select>
+            </label>
+          </div>
+          <div class="phase">
+            <div class="phase-title"><span class="dot proof"></span>Ball proof</div>
+            <div class="grid two compact">
+              <label>Hours<input id="ballProofHours" type="number" inputmode="decimal" min="0" step="0.25" value="6" /></label>
+              <label>Temp (°C)<input id="ballProofTemp" type="number" inputmode="decimal" min="10" max="35" step="0.5" value="22" /></label>
+            </div>
+          </div>
+        </div>
+        <div class="source-note" id="scheduleNote"></div>
+      </div>
+
+      <div class="card">
+        <div class="eyebrow">STEP 3 · TEMPERATURES</div>
+        <h2>Measure first. Then mix.</h2>
+        <p class="muted small-text">Probe the water, the flour (push the probe into the bag) and the air where the dough will sit.</p>
+        <div class="grid two">
+          <label>Mixing method
+            <select id="mixMethod">
+              <option value="tm7">Thermomix TM7 · Dough mode</option>
+              <option value="tm7folds">TM7 short mix + stretch &amp; folds</option>
+              <option value="hand">Hand knead (8–15 min)</option>
+              <option value="folds">Stretch &amp; folds only</option>
+              <option value="stand">Stand mixer</option>
+            </select>
+          </label>
+          <label>Friction factor (°C) <span class="muted" id="frictionStatus"></span>
+            <input id="friction" type="number" inputmode="decimal" min="-5" max="60" step="0.5" value="24" />
+          </label>
+        </div>
+        <div class="grid two compact" style="margin-top:12px">
+          <label>Room temp (°C)
+            <input id="roomTemp" type="number" inputmode="decimal" min="5" max="40" step="0.5" value="22" />
+          </label>
+          <label>Flour temp (°C)
+            <input id="flourTemp" type="number" inputmode="decimal" min="-20" max="40" step="0.5" value="22" />
+          </label>
+          <label>Tap water (°C)
+            <input id="tapTemp" type="number" inputmode="decimal" min="1" max="35" step="0.5" value="20" />
+          </label>
+          <label>Cold water (°C)
+            <input id="coldWaterTemp" type="number" inputmode="decimal" min="0" max="15" step="0.5" value="5" />
+          </label>
+          <label id="benchWrap" class="hidden">Bench surface temp (°C) <span class="muted">IR</span>
+            <input id="benchTemp" type="number" inputmode="decimal" min="0" max="40" step="0.5" value="" placeholder="optional" />
+          </label>
+          <label id="prefTempWrap" class="hidden">Preferment temp at mixing (°C)
+            <input id="prefTempAtMix" type="number" inputmode="decimal" min="0" max="30" step="0.5" value="18" />
+          </label>
+        </div>
+        <div class="fdt-row">
+          <label class="check"><input id="fdtAuto" type="checkbox" checked /> Auto target</label>
+          <label>Target final dough temp (°C)
+            <input id="targetFdt" type="number" inputmode="decimal" min="12" max="30" step="0.5" value="24" />
+          </label>
+        </div>
+        <div id="fdtResults" class="result-box show"></div>
+      </div>
+
+      <div class="card" id="recipeCard">
+        <div class="eyebrow">YOUR RECIPE</div>
+        <div id="calcResults"></div>
         <details class="math-details">
           <summary>Show the maths</summary>
           <div id="mathExplanation" class="math-box"></div>
         </details>
         <div class="button-row">
-          <button id="saveRecipe" class="primary">Save recipe</button>
-          <button id="copyRecipe" class="secondary">Copy recipe</button>
+          <button id="startDoughDay" class="primary">Start dough day →</button>
+          <button id="saveRecipe" class="secondary">Save recipe</button>
+          <button id="copyRecipe" class="secondary">Copy</button>
         </div>
       </div>
 
-      <div class="card tip" id="flourTip"></div>
-    </section>
-
-    <section id="planner" class="panel">
       <div class="card">
-        <div class="eyebrow">FERMENTATION PLANNER</div>
-        <h2>Work backwards from pizza time.</h2>
-        <p class="muted">The yeast estimator is deliberately shown as an estimate. It is calibrated against published Ooni dough formulas, then adjusted by a temperature-weighting model. It is not an AVPN or Ooni proprietary calculator.</p>
+        <div class="eyebrow">TIMELINE</div>
+        <h2>Dough temperature &amp; schedule.</h2>
+        <div id="tempChart" class="chart"></div>
+        <div id="plannerResults"></div>
+      </div>
 
-        <div class="grid two">
-          <label>Pizza time
-            <input id="bakeTime" type="datetime-local" />
-          </label>
-          <label>Your setup calibration
-            <select id="yeastCalibration">
-              <option value="0.8">My dough usually runs fast (−20%)</option>
-              <option value="1" selected>Standard starting point</option>
-              <option value="1.2">My dough usually runs slow (+20%)</option>
-            </select>
-          </label>
-          <label>Room bulk (hours)
-            <input id="bulkHours" type="number" min="0" step="0.5" value="2" />
-          </label>
-          <label>Bulk temp (°C)
-            <input id="bulkTemp" type="number" min="10" max="35" step="0.5" value="22" />
-          </label>
-          <label>Cold ferment (hours)
-            <input id="coldHours" type="number" min="0" step="1" value="20" />
-          </label>
-          <label>Fridge temp (°C)
-            <input id="fridgeTemp" type="number" min="1" max="10" step="0.5" value="4" />
-          </label>
-          <label>Final ball proof (hours)
-            <input id="ballProofHours" type="number" min="0" step="0.5" value="3" />
-          </label>
-          <label>Ball proof temp (°C)
-            <input id="ballProofTemp" type="number" min="10" max="35" step="0.5" value="22" />
-          </label>
-        </div>
-
-        <div class="result-box" id="plannerResults"></div>
+      <div class="card">
+        <div class="eyebrow">METHOD</div>
+        <h2 id="methodTitle">Step by step.</h2>
+        <div id="methodSteps"></div>
       </div>
 
       <div class="card">
         <div class="eyebrow">OVEN + STYLE</div>
         <h2>Starting bake targets.</h2>
+        <label>Oven
+          <select id="ovenProfile">
+            <option value="sidekick">Camp Chef Sidekick pizza oven</option>
+            <option value="high-temp">High-temp oven (Karu 2 Pro / Dome class)</option>
+            <option value="home">Conventional home oven</option>
+          </select>
+        </label>
         <div class="result-box show" id="ovenResults"></div>
+      </div>
+
+      <div class="card tip" id="flourTip"></div>
+    </section>
+
+    <!-- ================= DOUGH DAY ================= -->
+    <section id="live" class="panel">
+      <div class="card">
+        <div class="eyebrow">DOUGH DAY</div>
+        <h2 id="liveTitle">Right after mixing: probe the dough.</h2>
+        <div id="liveSummary" class="info"></div>
+        <div class="grid two compact" style="margin-top:12px">
+          <label>Water used (°C)
+            <input id="actWater" type="number" inputmode="decimal" step="0.5" />
+          </label>
+          <label>Room temp now (°C)
+            <input id="actRoom" type="number" inputmode="decimal" step="0.5" />
+          </label>
+          <label>Flour temp (°C)
+            <input id="actFlour" type="number" inputmode="decimal" step="0.5" />
+          </label>
+          <label>Dough temp after mixing (°C) <span class="muted">probe the centre</span>
+            <input id="actFdt" type="number" inputmode="decimal" step="0.1" placeholder="e.g. 24.5" />
+          </label>
+        </div>
+        <button id="checkFdt" class="primary wide">Check &amp; re-plan</button>
+        <div id="liveResults" class="result-box"></div>
+      </div>
+
+      <div class="card">
+        <div class="eyebrow">BEFORE OPENING</div>
+        <h2>Is the ball warm enough?</h2>
+        <p class="muted small-text">Cold dough is stiff and tears. Probe the centre of one ball.</p>
+        <div class="grid two">
+          <label>Ball core temp (°C)
+            <input id="ballCore" type="number" inputmode="decimal" step="0.5" placeholder="e.g. 9" />
+          </label>
+          <label>Where the balls sit (°C)
+            <input id="ballRoom" type="number" inputmode="decimal" step="0.5" />
+          </label>
+        </div>
+        <button id="checkBall" class="secondary wide">Check</button>
+        <div id="ballResults" class="result-box"></div>
+      </div>
+
+      <div class="card">
+        <div class="eyebrow">READY TO BAKE?</div>
+        <h2>Read the dough, not just the clock.</h2>
+        <div class="checklist" id="readyChecklist">
+          <label class="check"><input type="checkbox" /> Balls have roughly doubled (about 1.7–2.5×) and relaxed outward</label>
+          <label class="check"><input type="checkbox" /> Poke test: dent springs back slowly and only partly</label>
+          <label class="check"><input type="checkbox" /> Small bubbles visible on the sides / underneath the container</label>
+          <label class="check"><input type="checkbox" /> Smells mildly yeasty and sweet, not sharp, boozy or sour</label>
+          <label class="check"><input type="checkbox" /> Ball core at least 13 °C — ideally near room temp</label>
+        </div>
+        <div class="source-note">Doubling and poke test: Gozney, Thermapen, Craig (pizzamaking.com). Opening temperature: Tom Lehmann / PMQ (≥10 °C), Modernist Pizza (13 °C), Stadler Made (≈18 °C for best stretch). If the dent stays put and the ball is spreading, it's overproofed — see Fix it.</div>
       </div>
     </section>
 
-    <section id="troubleshooter" class="panel">
+    <!-- ================= FIX IT ================= -->
+    <section id="fix" class="panel">
       <div class="card">
         <div class="eyebrow">TROUBLESHOOTER</div>
-        <h2>Tell Pizza Lab what went wrong.</h2>
+        <h2>What went wrong?</h2>
         <div class="grid two">
           <label>Problem
             <select id="problem">
+              <option value="hotdough">Dough came out of the mixer too warm</option>
+              <option value="colddough">Dough came out too cold / is barely moving</option>
               <option value="sticky">Dough is very sticky / spreading</option>
               <option value="tearing">Dough tears when opening</option>
-              <option value="springback">Dough keeps springing back</option>
-              <option value="flat">Flat / weak rim</option>
+              <option value="springback">Dough keeps springing back / tight</option>
+              <option value="flat">Flat / weak rim, no oven spring</option>
               <option value="dense">Dense or gummy crumb</option>
-              <option value="pale">Pale top / poor browning</option>
+              <option value="pale">Pale crust / poor browning</option>
               <option value="burntbottom">Bottom burns before top cooks</option>
-              <option value="overproof">Looks overproofed</option>
-              <option value="underproof">Looks underproofed</option>
+              <option value="overproof">Looks overproofed / collapsed</option>
+              <option value="underproof">Looks underproofed / doesn't rise</option>
+              <option value="sour">Smells sour or off</option>
+              <option value="fridgeblob">Rose a lot in the fridge</option>
             </select>
           </label>
           <label>Time until bake
@@ -238,93 +385,224 @@
             </select>
           </label>
         </div>
-        <label>Anything else? <span class="muted">optional</span>
-          <textarea id="problemNotes" rows="4" placeholder="e.g. 76% hydration, Caputo Pizzeria, 25°C room, dough balls spreading..."></textarea>
-        </label>
-        <button id="diagnose" class="primary">Give me the fix</button>
+        <button id="diagnose" class="primary wide">Give me the fix</button>
         <div class="result-box" id="fixResults"></div>
+      </div>
+      <div class="card">
+        <div class="eyebrow">ERROR POINT · QUICK TABLE</div>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead><tr><th>Symptom</th><th>Likely cause</th><th>Check / fix</th></tr></thead>
+            <tbody id="errorTable"></tbody>
+          </table>
+        </div>
+        <div class="source-note">Based on the PizzaVibes “Dough Control” table, cross-checked against Gozney, Thermapen, PMQ (Tom Lehmann) and Stadler Made. Most rows trace back to one thing: dough temperature over time.</div>
       </div>
     </section>
 
+    <!-- ================= JOURNAL ================= -->
     <section id="journal" class="panel">
       <div class="card">
         <div class="card-head">
           <div>
-            <div class="eyebrow">BAKE JOURNAL</div>
-            <h2>Keep the good ones. Learn from the shit ones.</h2>
+            <div class="eyebrow">LAB PROTOCOL</div>
+            <h2>Log the bake. Learn from every batch.</h2>
           </div>
-          <button id="exportData" class="ghost small">Export</button>
+          <button id="fillFromPlan" class="ghost small">Fill from plan</button>
         </div>
-
         <div class="grid two">
-          <label>Bake date
-            <input id="journalDate" type="date" />
-          </label>
-          <label>Rating / 10
-            <input id="journalRating" type="number" min="1" max="10" step="0.5" value="8" />
-          </label>
-          <label>Recipe
-            <select id="journalRecipe"></select>
-          </label>
-          <label>Oven / setup
-            <input id="journalOven" type="text" value="Camp Chef Sidekick" />
-          </label>
+          <label>Bake date<input id="jDate" type="date" /></label>
+          <label>Recipe<select id="jRecipe"></select></label>
         </div>
-        <label>Notes
-          <textarea id="journalNotes" rows="4" placeholder="What worked? What would you change next time?"></textarea>
+        <details open>
+          <summary>1 · Mixing</summary>
+          <div class="grid two detail-grid">
+            <label>Method<select id="jMethod"></select></label>
+            <label>Mix / knead time (min)<input id="jMixTime" type="number" inputmode="decimal" step="0.5" /></label>
+            <label>Room temp (°C)<input id="jRoom" type="number" inputmode="decimal" step="0.5" /></label>
+            <label>Flour temp (°C)<input id="jFlour" type="number" inputmode="decimal" step="0.5" /></label>
+            <label>Water temp (°C)<input id="jWater" type="number" inputmode="decimal" step="0.5" /></label>
+            <label>Final dough temp (°C)<input id="jFdt" type="number" inputmode="decimal" step="0.1" /></label>
+            <label>Preferment temp (°C)<input id="jPrefTemp" type="number" inputmode="decimal" step="0.5" placeholder="if used" /></label>
+            <label>Ice used?<select id="jIce"><option value="no">No</option><option value="yes">Yes</option></select></label>
+          </div>
+        </details>
+        <details open>
+          <summary>2 · Fermentation</summary>
+          <div class="grid two detail-grid">
+            <label>Bulk at room (h)<input id="jBulkH" type="number" inputmode="decimal" step="0.25" /></label>
+            <label>Bulk temp (°C)<input id="jBulkT" type="number" inputmode="decimal" step="0.5" /></label>
+            <label>Fridge (h)<input id="jColdH" type="number" inputmode="decimal" step="0.5" /></label>
+            <label>Fridge temp (°C)<input id="jColdT" type="number" inputmode="decimal" step="0.5" /></label>
+            <label>Ball proof (h)<input id="jProofH" type="number" inputmode="decimal" step="0.25" /></label>
+            <label>Ball proof temp (°C)<input id="jProofT" type="number" inputmode="decimal" step="0.5" /></label>
+            <label>Yeast (% of flour)<input id="jYeastPct" type="number" inputmode="decimal" step="0.001" /></label>
+            <label>How did it proof?
+              <select id="jOutcome">
+                <option value="right">Just right</option>
+                <option value="under">Underproofed (tight, slow)</option>
+                <option value="slightunder">A bit slow</option>
+                <option value="slightover">A bit fast / soft</option>
+                <option value="over">Overproofed (slack, spreading)</option>
+              </select>
+            </label>
+          </div>
+        </details>
+        <details open>
+          <summary>3 · Final proof &amp; baking</summary>
+          <div class="grid two detail-grid">
+            <label>Ball weight (g)<input id="jBallW" type="number" inputmode="decimal" step="5" /></label>
+            <label>Ball core temp at opening (°C)<input id="jBallCore" type="number" inputmode="decimal" step="0.5" /></label>
+            <label>Oven<input id="jOven" type="text" value="Camp Chef Sidekick" /></label>
+            <label>Stone temp (°C) <span class="muted ir-only">IR</span><input id="jStone" type="number" inputmode="decimal" step="5" /></label>
+            <label>Bake time (sec)<input id="jBakeTime" type="number" inputmode="decimal" step="5" /></label>
+            <label>Overall rating /10<input id="jRating" type="number" inputmode="decimal" min="1" max="10" step="0.5" value="8" /></label>
+          </div>
+        </details>
+        <details open>
+          <summary>4 · Result scores (1–10)</summary>
+          <div class="grid two detail-grid score-grid">
+            <label>Cornicione rise<input id="sRise" type="number" inputmode="decimal" min="1" max="10" step="1" /></label>
+            <label>Crumb openness<input id="sCrumb" type="number" inputmode="decimal" min="1" max="10" step="1" /></label>
+            <label>Flavour<input id="sFlavour" type="number" inputmode="decimal" min="1" max="10" step="1" /></label>
+            <label>Dough handling<input id="sHandling" type="number" inputmode="decimal" min="1" max="10" step="1" /></label>
+            <label>Oven spring<input id="sSpring" type="number" inputmode="decimal" min="1" max="10" step="1" /></label>
+          </div>
+        </details>
+        <label style="margin-top:12px">Special notes <span class="muted">smell, bubbles, behaviour after fridge…</span>
+          <textarea id="jNotes" rows="3"></textarea>
         </label>
-        <button id="saveBake" class="primary">Save bake</button>
+        <label class="check" style="margin-top:10px"><input id="jApplyCalib" type="checkbox" checked /> Use this result to tune my yeast calibration</label>
+        <button id="saveBake" class="primary wide">Save bake</button>
+        <div id="journalMsg"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <div class="eyebrow">PAST BAKES</div>
+          <button id="exportData" class="ghost small">Export all</button>
+        </div>
+        <div id="savedBakes"></div>
       </div>
 
       <div class="card">
         <div class="eyebrow">SAVED RECIPES</div>
         <div id="savedRecipes"></div>
       </div>
-
-      <div class="card">
-        <div class="eyebrow">PAST BAKES</div>
-        <div id="savedBakes"></div>
-      </div>
     </section>
 
-    <section id="sources" class="panel">
+    <!-- ================= MY KITCHEN ================= -->
+    <section id="kitchen" class="panel">
       <div class="card">
-        <div class="eyebrow">CALCULATION BASIS</div>
-        <h2>What Pizza Lab is actually calculating.</h2>
-        <p><strong>Ingredient weights:</strong> standard baker's percentages. Flour is 100%; every other ingredient is a percentage of flour. Pizza Lab solves backwards from your target total dough weight and includes yeast in the total, so the finished formula still adds up to the ball weights you requested.</p>
-        <div class="formula">Flour = target dough ÷ (1 + water% + salt% + yeast% + oil% + sugar%)</div>
-        <p><strong>Preferments:</strong> the selected percentage of total flour and matching water are moved into the poolish/biga. The final dough water is reduced by the same amount so overall hydration does not change.</p>
-        <p><strong>Yeast:</strong> the automatic yeast estimate is a Pizza Lab model, not an official AVPN/Ooni formula. It is anchored to two current Ooni recipes — a short 3–4 hour dough and a ~25 hour Neapolitan-style dough — then temperature-weighted. Cold fermentation is deliberately suppressed below 10°C. Treat it as a starting dose and calibrate it to your fridge, flour and dough temperature.</p>
+        <div class="eyebrow">MY KITCHEN</div>
+        <h2>Your gear, your numbers.</h2>
+        <p class="muted small-text">Saved on this device. These feed every plan.</p>
+        <div class="grid two">
+          <label>Thermometers
+            <select id="pThermo">
+              <option value="probe">Probe only</option>
+              <option value="probe+ir">Probe + infrared</option>
+            </select>
+          </label>
+          <label>Usual mixing method<select id="pMethod"></select></label>
+          <label>Fridge temp (°C) <span class="muted">measured</span>
+            <input id="pFridge" type="number" inputmode="decimal" step="0.5" />
+          </label>
+          <label>Tap water temp (°C)
+            <input id="pTap" type="number" inputmode="decimal" step="0.5" />
+          </label>
+          <label>Fridge-cold water temp (°C)
+            <input id="pColdWater" type="number" inputmode="decimal" step="0.5" />
+          </label>
+          <label>Usual flour<select id="pFlour"></select></label>
+          <label>Usual oven<select id="pOven"></select></label>
+          <label>Usual yeast<select id="pYeast"><option value="idy">IDY</option><option value="ady">ADY</option><option value="fresh">Fresh</option></select></label>
+          <label>Usual balls<input id="pBalls" type="number" inputmode="numeric" step="1" /></label>
+          <label>Usual ball weight (g)<input id="pBallW" type="number" inputmode="numeric" step="5" /></label>
+        </div>
+        <div class="info">How to measure your fridge: put a glass of water on the shelf where dough goes, leave it a few hours, then probe the water. Food Standards Australia says 5 °C or colder for food safety; many home fridges sit at 3–7 °C, and every degree changes cold-ferment speed.</div>
+        <button id="saveProfile" class="primary wide">Save my kitchen</button>
+        <div id="profileMsg"></div>
       </div>
 
       <div class="card">
-        <div class="eyebrow">PRIMARY / OFFICIAL SOURCES</div>
-        <div class="source-list">
-          <a href="https://www.pizzanapoletana.org/public/pdf/Disciplinare-2024-ENG.pdf" target="_blank" rel="noopener"><strong>AVPN International Regulations 2024</strong><span>Traditional Neapolitan ingredient limits, no fat/sugar, flour strength, ball weight and fermentation guidance.</span></a>
-          <a href="https://www.pizzanapoletana.org/en/ricetta_pizza_napoletana" target="_blank" rel="noopener"><strong>AVPN official recipe page</strong><span>1 L water, 1.6–1.8 kg flour, 40–60 g salt and fresh/dry yeast relationship.</span></a>
-          <a href="https://www.mulinocaputo.it/en/products/pizzeria/" target="_blank" rel="noopener"><strong>Mulino Caputo — Pizzeria</strong><span>Type 00, 12.5% protein, W 260–280, P/L 0.50–0.60; recommended for classic Neapolitan.</span></a>
-          <a href="https://www.mulinocaputo.it/en/products/nuvola/" target="_blank" rel="noopener"><strong>Mulino Caputo — Nuvola</strong><span>Type 0, 12.5% protein, W 270–290, P/L 0.50–0.60; Caputo gives a 72-hour example split between fridge and room temperature.</span></a>
-          <a href="https://au.ooni.com/blogs/recipes/ooni-neapolitan-style-pizza-dough" target="_blank" rel="noopener"><strong>Ooni Neapolitan-style dough</strong><span>65% hydration and published fresh/ADY/IDY quantities with a ~25-hour fermentation schedule.</span></a>
-          <a href="https://au.ooni.com/blogs/recipes/classic-pizza-dough" target="_blank" rel="noopener"><strong>Ooni Classic Pizza Dough</strong><span>Short 3–4 hour dough and published yeast quantities used as the fast-fermentation anchor.</span></a>
-          <a href="https://au.ooni.com/blogs/recipes/new-york-style-pizza-dough" target="_blank" rel="noopener"><strong>Ooni New York-style pizza</strong><span>Official recipe example with ~65% hydration, ~3% salt, ~5% oil and ~1% sugar.</span></a>
-          <a href="https://au.ooni.com/blogs/recipes/our-best-poolish-dough" target="_blank" rel="noopener"><strong>Ooni Poolish Dough</strong><span>100% hydration poolish and a 12-hour preferment example.</span></a>
-          <a href="https://au.ooni.com/blogs/recipes/100-biga" target="_blank" rel="noopener"><strong>Ooni 100% Biga</strong><span>Biga as a low-hydration preferment and a 16-hour head-start example.</span></a>
+        <div class="eyebrow">FRICTION FACTORS</div>
+        <h2>How much heat each method adds.</h2>
+        <p class="muted small-text">Friction factor is the number used in the water-temp formula — roughly 3× the actual warm-up during mixing. Defaults are published starting points; Dough day calibrates them from your real probe readings.</p>
+        <div id="frictionTable"></div>
+      </div>
+
+      <div class="card">
+        <div class="eyebrow">YEAST CALIBRATION</div>
+        <h2>Your dough's personal speed.</h2>
+        <div id="calibBox"></div>
+        <div class="button-row">
+          <button id="resetCalib" class="ghost small">Reset to 1.00</button>
         </div>
       </div>
 
       <div class="card">
-        <div class="eyebrow">WHAT IS SOURCE-BACKED VS GUIDANCE?</div>
-        <div class="legend-row"><span class="badge source">SOURCE</span><span>Directly derived from an official association, manufacturer or Ooni published recipe.</span></div>
-        <div class="legend-row"><span class="badge guidance">GUIDANCE</span><span>Pizza Lab working range or practical recommendation. Useful, but not an official standard.</span></div>
-        <div class="legend-row"><span class="badge model">MODEL</span><span>Calculated estimate, especially yeast/temperature behaviour. Tune against your own bake journal.</span></div>
+        <div class="eyebrow">BACKUP</div>
+        <div class="button-row">
+          <button id="exportData2" class="secondary">Export data (.json)</button>
+          <label class="secondary file-btn">Import data<input id="importData" type="file" accept="application/json" hidden /></label>
+        </div>
+        <div class="source-note">Your journal lives in this browser's storage. Export before clearing Safari website data.</div>
+      </div>
+    </section>
+
+    <!-- ================= LEARN ================= -->
+    <section id="learn" class="panel">
+      <div class="card">
+        <div class="eyebrow">WHAT THE GUIDES AGREE ON</div>
+        <h2>Dough control in eight rules.</h2>
+        <ol class="rules" id="rulesList"></ol>
+      </div>
+
+      <div class="card">
+        <div class="eyebrow">GUIDE CHECK</div>
+        <h2>The PizzaVibes guide, verified.</h2>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead><tr><th>Guide says</th><th>Verdict</th><th>What the other sources say</th></tr></thead>
+            <tbody id="verifyTable"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="eyebrow">HOW THE YEAST MODEL WORKS</div>
+        <h2>Transparent, not magic.</h2>
+        <p>Pizza Lab follows the dough's temperature hour by hour. It starts at your final dough temperature and drifts toward the room, fridge or proof temperature at a realistic speed (a bulk mass is slower than single balls). Yeast activity at each temperature is added up into <strong>equivalent hours at 25 °C</strong>, and the yeast dose is solved from that.</p>
+        <div class="formula">activity(T) = ((T + 1) ÷ 26)²   ·   IDY % = 0.93 × salt factor × your calibration ÷ (equiv. hours − 1.25)^1.3</div>
+        <p class="muted small-text">The constants were fitted to the published recipes below. Bread-style recipes that aim for a fast, generous rise use more yeast than the model — that's expected.</p>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead><tr><th>Published recipe</th><th>Their IDY %</th><th>Model IDY %</th><th>Ratio</th></tr></thead>
+            <tbody id="anchorTable"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="eyebrow">SOURCES</div>
+        <div id="sourceList" class="source-list"></div>
+      </div>
+
+      <div class="card">
+        <div class="eyebrow">LABELS</div>
+        <div class="legend-row"><span class="badge source">SOURCE</span><span>Directly from an official body, manufacturer or published recipe.</span></div>
+        <div class="legend-row"><span class="badge guidance">GUIDANCE</span><span>Practical working range or Pizza Lab recommendation — useful, not a standard.</span></div>
+        <div class="legend-row"><span class="badge model">MODEL</span><span>Calculated estimate. Tune it with your journal.</span></div>
       </div>
     </section>
   </main>
 
   <footer>
-    <strong>Pizza Lab v2</strong> stores recipes and bake notes locally on this device. Recipe scaling is exact baker's maths; fermentation is a transparent starting model, not laboratory truth.
+    <strong>Pizza Lab v3</strong> · Recipes, kitchen settings and bake notes stay on this device. Ingredient maths is exact; fermentation is a transparent model you tune with your own results.
   </footer>
 
+  <script src="model.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
